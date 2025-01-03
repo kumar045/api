@@ -1,5 +1,6 @@
 # server.py
 from fastapi import FastAPI, Body
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import spacy
 
@@ -17,15 +18,11 @@ app.add_middleware(
 # Load the spaCy German model (make sure you have installed it via: python -m spacy download de_core_news_sm)
 nlp = spacy.load("de_core_news_sm")
 
-@app.post("/tokenize-sentences")
-async def tokenize_sentences(text: str = Body(...)):
-    """
-    Expects a JSON body like:
-        { "text": "Hallo Welt! Dies ist ein deutscher Satz." }
+class TextPayload(BaseModel):
+    text: str
 
-    Returns:
-        { "sentences": ["Hallo Welt!", "Dies ist ein deutscher Satz."] }
-    """
-    doc = nlp(text)
-    sentences = [sent.text for sent in doc.sents]
-    return {"sentences": sentences}
+@app.post("/tokenize-sentences")
+async def tokenize_sentences(payload: TextPayload):
+    # Now you can access payload.text
+    doc = nlp(payload.text)
+    return {"sentences": [sent.text for sent in doc.sents]}
