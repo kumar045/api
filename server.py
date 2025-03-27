@@ -3,6 +3,7 @@ from fastapi import FastAPI, Body
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
+import asyncio
 import openai
 import spacy
 import os
