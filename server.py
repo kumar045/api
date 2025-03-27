@@ -6,6 +6,7 @@ import google.generativeai as genai
 from openai import AsyncOpenAI
 from typing import Optional
 import asyncio
+import openai
 import spacy
 import os
 
