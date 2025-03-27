@@ -3,9 +3,9 @@ from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
+from openai import AsyncOpenAI
 from typing import Optional
 import asyncio
-import openai
 import spacy
 import os
 
