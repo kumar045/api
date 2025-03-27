@@ -21,6 +21,14 @@ app.add_middleware(
 # Load the spaCy German model (make sure you have installed it via: python -m spacy download de_core_news_sm)
 nlp = spacy.load("de_core_news_sm")
 
+google_api_key = os.environ.get("GOOGLE_API_KEY")
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+
+# Validate API keys are available
+if not google_api_key or not openai_api_key:
+    print("Warning: API keys not found in environment variables")
+    print("Make sure to set GOOGLE_API_KEY and OPENAI_API_KEY")
+
 class TextPayload(BaseModel):
     text: str
 
@@ -40,6 +48,13 @@ class ChainResponse(BaseModel):
 @app.post("/chain-models", response_model=ChainResponse)
 async def chain_models(request: PromptRequest):
     try:
+        # Validate API keys at runtime
+        if not google_api_key or not openai_api_key:
+            raise HTTPException(
+                status_code=500, 
+                detail="API keys not configured. Set GOOGLE_API_KEY and OPENAI_API_KEY environment variables."
+            )
+            
         # Step 1: Process with Gemini using only system prompt
         gemini_result = await generateText({
             "model": google("gemini-2.0-pro"),
@@ -51,7 +66,7 @@ async def chain_models(request: PromptRequest):
         # Step 2: Pass Gemini's output to GPT-4o
         gpt_result = await generateText({
             "model": openai("gpt-4o"),
-            "prompt": gemini_output,  # Use Gemini's output directly
+            "prompt": gemini_output,
             "system": "You are an expert editor who improves and refines text."
         })
         
