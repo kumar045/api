@@ -68,8 +68,8 @@ async def chain_models(request: PromptRequest):
         
         gemini_output = gemini_response.text
         
-        # Step 2: Pass Gemini's output to GPT-4o
-        openai_response = await openai.chat.completions.create(
+        # Step 2: Pass Gemini's output to GPT-4o using async client
+        openai_response = await async_openai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are an expert editor who improves and refines text."},
@@ -80,11 +80,19 @@ async def chain_models(request: PromptRequest):
         final_output = openai_response.choices[0].message.content
         
         return ChainResponse(
+            gemini_output=gemini_output,
             final_output=final_output
         )
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Include more detailed error information
+        error_detail = str(e)
+        import traceback
+        error_traceback = traceback.format_exc()
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error: {error_detail}\n\nTraceback: {error_traceback}"
+        )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
