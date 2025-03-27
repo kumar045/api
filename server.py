@@ -33,6 +33,12 @@ if google_api_key:
     
 if openai_api_key:
     openai.api_key = openai_api_key
+    
+OPENAI_SYSTEM_PROMPT = '''
+
+You are an expert editor who improves and refines text.
+
+'''
 
 class TextPayload(BaseModel):
     text: str
@@ -44,7 +50,7 @@ async def tokenize_sentences(payload: TextPayload):
     return {"sentences": [sent.text for sent in doc.sents]}
 
 class PromptRequest(BaseModel):
-    system_prompt: str = "You are a helpful assistant."
+    system_prompt: str
 
 class ChainResponse(BaseModel):
     final_output: str
@@ -73,7 +79,7 @@ async def chain_models(request: PromptRequest):
             response = openai.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": "You are an expert editor who improves and refines text."},
+                    {"role": "system", "content": OPENAI_SYSTEM_PROMPT},
                     {"role": "user", "content": gemini_output}
                 ]
             )
