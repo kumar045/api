@@ -42,7 +42,7 @@ async def chain_models(request: PromptRequest):
     try:
         # Step 1: Process with Gemini using only system prompt
         gemini_result = await generateText({
-            "model": google("gemini-1.5-pro"),
+            "model": google("gemini-2.0-pro"),
             "system": request.system_prompt
         })
         
