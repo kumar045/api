@@ -1,4 +1,10 @@
 fastapi
 python-multipart
 uvicorn[standard]
+pydantic
 spacy
+ai-sdk
+python-dotenv
+httpx
+uvloop
+httptools
