@@ -1,5 +1,5 @@
 # server.py
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
