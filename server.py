@@ -3,7 +3,6 @@ from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
-from openai import AsyncOpenAI
 from typing import Optional
 import asyncio
 import openai
@@ -61,7 +60,7 @@ async def chain_models(request: PromptRequest):
             )
             
         # Step 1: Process with Gemini
-        gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+        gemini_model = genai.GenerativeModel('gemini-pro')
         gemini_response = await asyncio.to_thread(
             gemini_model.generate_content,
             request.system_prompt
@@ -69,19 +68,22 @@ async def chain_models(request: PromptRequest):
         
         gemini_output = gemini_response.text
         
-        # Step 2: Pass Gemini's output to GPT-4o using async client
-        openai_response = await async_openai_client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are an expert editor who improves and refines text."},
-                {"role": "user", "content": gemini_output}
-            ]
-        )
+        # Step 2: Pass Gemini's output to GPT-4o using synchronous client in a thread
+        def call_openai():
+            response = openai.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert editor who improves and refines text."},
+                    {"role": "user", "content": gemini_output}
+                ]
+            )
+            return response
+            
+        openai_response = await asyncio.to_thread(call_openai)
         
         final_output = openai_response.choices[0].message.content
         
         return ChainResponse(
-            gemini_output=gemini_output,
             final_output=final_output
         )
         
