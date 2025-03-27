@@ -3,7 +3,8 @@ python-multipart
 uvicorn[standard]
 pydantic
 spacy
-ai-sdk
+openai
+google-generativeai
 python-dotenv
 httpx
 uvloop
