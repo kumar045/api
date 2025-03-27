@@ -60,7 +60,7 @@ async def chain_models(request: PromptRequest):
             )
             
         # Step 1: Process with Gemini
-        gemini_model = genai.GenerativeModel('gemini-2.0-pro')
+        gemini_model = genai.GenerativeModel('gemini-2.0-flash')
         gemini_response = await asyncio.to_thread(
             gemini_model.generate_content,
             request.system_prompt
