@@ -1,4 +1,5 @@
 fastapi
+protobuf
 python-multipart
 uvicorn[standard]
 pydantic
