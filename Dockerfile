@@ -18,7 +18,7 @@ RUN python -m spacy download de_core_news_sm
 COPY . /app
 
 # Expose port 8000 for FastAPI
-EXPOSE 8001
+EXPOSE 8000
 
 # Start the FastAPI server
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
