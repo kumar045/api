@@ -8,6 +8,7 @@ WORKDIR /app
 COPY requirements.txt /app/
 
 # Install dependencies
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Download spaCy German model
